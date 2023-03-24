@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../store/apiCalls';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
-const LoginForm: React.FC = () => {
+const FormLogin: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -71,11 +71,10 @@ const LoginForm: React.FC = () => {
   //   if succes it will navigate to profile page
   useEffect(() => {
     if (currentUser && !error) {
-      console.log(currentUser);
-      navigate('/');
+      navigate('/profile');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser, error]);
+  }, [currentUser]);
 
   return (
     <form
@@ -156,4 +155,4 @@ const LoginForm: React.FC = () => {
   );
 };
 
-export default React.memo(LoginForm);
+export default React.memo(FormLogin);

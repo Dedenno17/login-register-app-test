@@ -1,6 +1,6 @@
 import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import LoginForm from '../../components/Login/LoginForm';
+import FormLogin from '../../components/Login/FormLogin';
 
 const Login: React.FC = () => {
   return (
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
             Log In
           </span>
           {/* FORM */}
-          <LoginForm />
+          <FormLogin />
         </div>
 
         {/* LINE */}
