@@ -4,7 +4,7 @@ import { FaAngleDown, FaCaretDown } from 'react-icons/fa';
 import { BiSearch } from 'react-icons/bi';
 import { MdMail, MdNotificationsNone } from 'react-icons/md';
 
-const Header = () => {
+const Header: React.FC = () => {
   return (
     <div className="w-full flex items-center justify-between gap-6 py-3 px-6 bg-white">
       {/* LOGO */}
@@ -50,4 +50,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);
