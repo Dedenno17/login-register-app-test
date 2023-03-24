@@ -1,9 +1,86 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { register } from '../../store/apiCalls';
+import { useAppDispatch } from '../../store/hooks';
 
 const FormRegister: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  // state of form
+  const [email, setEmail] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [userType, setUserType] = useState<string>('');
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
+
+  // if ready to submit
+  useEffect(() => {
+    const validEmail = email.trim().length !== 0 && email.includes('@');
+    const validPassword = password.trim().length !== 0;
+    const validPhoneNumber =
+      phoneNumber.trim().length !== 0 && phoneNumber.length >= 11;
+    const validFirstName = firstName.trim().length !== 0;
+    const validLastName = lastName.trim().length !== 0;
+    const validUserType = userType.trim().length !== 0;
+
+    const validForm =
+      validEmail &&
+      validPassword &&
+      validPhoneNumber &&
+      validFirstName &&
+      validLastName &&
+      validUserType;
+
+    if (validForm) {
+      setIsReadyToSubmit(true);
+    } else {
+      setIsReadyToSubmit(false);
+    }
+  }, [email, firstName, password, lastName, phoneNumber, userType]);
+
+  // function submit
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const validEmail = email.trim().length !== 0 && email.includes('@');
+    const validPassword = password.trim().length !== 0;
+    const validPhoneNumber =
+      phoneNumber.trim().length !== 0 && phoneNumber.length >= 11;
+    const validFirstName = firstName.trim().length !== 0;
+    const validLastName = lastName.trim().length !== 0;
+    const validUserType = userType.trim().length !== 0;
+
+    const validForm =
+      validEmail &&
+      validPassword &&
+      validPhoneNumber &&
+      validFirstName &&
+      validLastName &&
+      validUserType;
+
+    if (!validForm) {
+      return;
+    }
+
+    const body = {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      userType,
+    };
+
+    register(dispatch, body);
+  };
+
   return (
-    <form className="w-full gap-10 flex flex-col items-center">
+    <form
+      className="w-full gap-10 flex flex-col items-center"
+      onSubmit={submitHandler}
+    >
       {/* INPUT */}
       <div className="w-full flex">
         {/* FORM LEFT */}
@@ -17,7 +94,10 @@ const FormRegister: React.FC = () => {
               type="email"
               id="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter Your Email"
+              required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
             />
           </div>
@@ -31,7 +111,10 @@ const FormRegister: React.FC = () => {
               type="password"
               id="password"
               name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter Password"
+              required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
             />
           </div>
@@ -45,7 +128,10 @@ const FormRegister: React.FC = () => {
               type="text"
               id="phoneNumber"
               name="phoneNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder="+62xxxxxxxxxxx"
+              required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
             />
           </div>
@@ -62,6 +148,9 @@ const FormRegister: React.FC = () => {
               type="text"
               id="firstName"
               name="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
             />
           </div>
@@ -75,6 +164,9 @@ const FormRegister: React.FC = () => {
               type="text"
               id="lastName"
               name="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
             />
           </div>
@@ -88,7 +180,8 @@ const FormRegister: React.FC = () => {
                   name="userType"
                   id="student"
                   value="student"
-                  className="absolute w-full h-full bg-darkGrey"
+                  className="absolute w-full h-full bg-darkGrey cursor-pointer"
+                  onChange={(e) => setUserType(e.target.value)}
                 />
               </div>
               <label htmlFor="student" className="text-lg text-darkGrey">
@@ -102,7 +195,8 @@ const FormRegister: React.FC = () => {
                   name="userType"
                   id="professional"
                   value="professional"
-                  className="absolute w-full h-full bg-darkGrey"
+                  className="absolute w-full h-full bg-darkGrey cursor-pointer"
+                  onChange={(e) => setUserType(e.target.value)}
                 />
               </div>
               <label htmlFor="professional" className="text-lg text-darkGrey">
@@ -117,7 +211,9 @@ const FormRegister: React.FC = () => {
       <div className="w-full flex flex-col items-center justify-center gap-4">
         <button
           type="submit"
-          className="w-[45%] bg-primaryRed text-white text-lg font-semibold py-3"
+          className={`w-[45%] ${
+            isReadyToSubmit ? 'bg-primaryRed' : 'bg-lighterGrey'
+          } text-white text-lg font-semibold py-3`}
         >
           Sign Up
         </button>

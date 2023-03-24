@@ -9,7 +9,7 @@ module.exports = {
         primaryBlack: '#0A0A0A',
         darkGrey: '#1D1A1A',
         lightGrey: '#787777',
-        lighterGrey: '#FAFAFA',
+        lighterGrey: '#D6D6D6',
       },
     },
   },
