@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../../store/apiCalls';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const FormRegister: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  // global state
+  const { isFetching } = useAppSelector((state) => state.register);
 
   // state of form
   const [email, setEmail] = useState<string>('');
@@ -14,6 +18,10 @@ const FormRegister: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [userType, setUserType] = useState<string>('');
   const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
+  const [inValidForm, setInvalidForm] = useState<{
+    errorStatus: Boolean;
+    errorMessage: string;
+  }>({ errorStatus: false, errorMessage: '' });
 
   // if ready to submit
   useEffect(() => {
@@ -60,10 +68,43 @@ const FormRegister: React.FC = () => {
       validLastName &&
       validUserType;
 
+    // if form is not valid
     if (!validForm) {
+      !validEmail &&
+        setInvalidForm({
+          errorStatus: true,
+          errorMessage: 'Your email is Invalid',
+        });
+      !validPassword &&
+        setInvalidForm({
+          errorStatus: true,
+          errorMessage: 'Your password is Invalid',
+        });
+      !validFirstName &&
+        setInvalidForm({
+          errorStatus: true,
+          errorMessage: 'First Name is Invalid',
+        });
+      !validLastName &&
+        setInvalidForm({
+          errorStatus: true,
+          errorMessage: 'Last Name is Invalid',
+        });
+      !validPhoneNumber &&
+        setInvalidForm({
+          errorStatus: true,
+          errorMessage: 'Phone Number is Invalid',
+        });
+      !validUserType &&
+        setInvalidForm({
+          errorStatus: true,
+          errorMessage: 'Choose one, between Student or Professional',
+        });
       return;
     }
 
+    setInvalidForm({ errorStatus: false, errorMessage: '' });
+    // crate body
     const body = {
       firstName,
       lastName,
@@ -73,7 +114,11 @@ const FormRegister: React.FC = () => {
       userType,
     };
 
+    // fetch with redux thunk
     register(dispatch, body);
+
+    // navigate to login
+    navigate('/auth/login');
   };
 
   return (
@@ -179,7 +224,7 @@ const FormRegister: React.FC = () => {
                   type="radio"
                   name="userType"
                   id="student"
-                  value="student"
+                  value="Student"
                   className="absolute w-full h-full bg-darkGrey cursor-pointer"
                   onChange={(e) => setUserType(e.target.value)}
                 />
@@ -194,7 +239,7 @@ const FormRegister: React.FC = () => {
                   type="radio"
                   name="userType"
                   id="professional"
-                  value="professional"
+                  value="Professional"
                   className="absolute w-full h-full bg-darkGrey cursor-pointer"
                   onChange={(e) => setUserType(e.target.value)}
                 />
@@ -207,6 +252,13 @@ const FormRegister: React.FC = () => {
         </div>
       </div>
 
+      {/* ERROR MESSAGE */}
+      {inValidForm.errorStatus && (
+        <span className="w-full text-center text-sm text-primaryRed font-bold">
+          {inValidForm.errorMessage}
+        </span>
+      )}
+
       {/* BUTTON */}
       <div className="w-full flex flex-col items-center justify-center gap-4">
         <button
@@ -215,7 +267,7 @@ const FormRegister: React.FC = () => {
             isReadyToSubmit ? 'bg-primaryRed' : 'bg-lighterGrey'
           } text-white text-lg font-semibold py-3`}
         >
-          Sign Up
+          {isFetching ? 'Loading ...' : 'Sign Up'}
         </button>
         <span className="text-sm text-lightGrey">
           Already Have an Account?{' '}

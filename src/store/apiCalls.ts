@@ -1,13 +1,40 @@
 import { registerSliceActions } from './slices/register';
+import { loginSliceActions } from './slices/login';
 
-interface RegisterBody {
-  firstName: string;
-  lastName: string;
+interface LoginBody {
   email: string;
   password: string;
+}
+
+interface RegisterBody extends LoginBody {
+  firstName: string;
+  lastName: string;
   phoneNumber: string;
   userType: string;
 }
+
+// login thunk
+export const login = async (dispatch: any, body: LoginBody) => {
+  dispatch(loginSliceActions.loginStart());
+
+  try {
+    const res = await fetch(`${process.env.REACT_APP_LOGIN_API}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      throw new Error();
+    }
+
+    const data = await res.json();
+
+    dispatch(loginSliceActions.loginSuccess(data));
+  } catch (err) {
+    dispatch(loginSliceActions.loginFailure());
+  }
+};
 
 // register thunk
 export const register = async (dispatch: any, body: RegisterBody) => {
