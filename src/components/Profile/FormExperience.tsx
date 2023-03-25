@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { BsCheckLg } from 'react-icons/bs';
+import { useAppSelector } from '../../store/hooks';
 
 interface Props {
-  children?: ReactNode;
   onClose: (status: boolean) => void;
   portal?: any;
 }
@@ -20,6 +20,84 @@ const BgPortal: React.FC<Props> = ({ onClose }) => {
 
 // form component
 const FormComponent: React.FC<Props> = ({ onClose }) => {
+  // global state
+  const user = useAppSelector((state) => state.login.currentUser);
+
+  // state of form
+  const [country, setCountry] = useState<string>('');
+  const [jobTitle, setJobTitle] = useState<string>('');
+  const [companyName, setCompanyName] = useState<string>('');
+  const [currentJob, setCurrentJob] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<{
+    startMonth: string;
+    startYear: string;
+  }>({ startMonth: '', startYear: '' });
+  const [endDate, setEndDate] = useState<{ endMonth: string; endYear: string }>(
+    { endMonth: '', endYear: '' }
+  );
+  const [description, setDescription] = useState<string>('');
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
+
+  // if ready to submit
+  useEffect(() => {
+    const validCountry = country.trim().length !== 0;
+    const validJobTitle = jobTitle.trim().length !== 0;
+    const validCompanyName = companyName.trim().length !== 0;
+    const validStartDate =
+      startDate.startMonth.trim().length !== 0 &&
+      startDate.startYear.trim().length !== 0;
+    const validDescription = description.trim().length !== 0;
+
+    const validForm =
+      validCountry &&
+      validCompanyName &&
+      validJobTitle &&
+      validStartDate &&
+      validDescription;
+
+    if (validForm) {
+      setIsReadyToSubmit(true);
+    } else {
+      setIsReadyToSubmit(false);
+    }
+  }, [country, jobTitle, companyName, startDate, description]);
+
+  // function submit
+  const submitHandler = () => {
+    const validCountry = country.trim().length !== 0;
+    const validJobTitle = jobTitle.trim().length !== 0;
+    const validCompanyName = companyName.trim().length !== 0;
+    const validStartDate =
+      startDate.startMonth.trim().length !== 0 &&
+      startDate.startYear.trim().length !== 0;
+    const validDescription = description.trim().length !== 0;
+
+    const validForm =
+      validCountry &&
+      validCompanyName &&
+      validJobTitle &&
+      validStartDate &&
+      validDescription;
+
+    if (!validForm) {
+      return;
+    }
+
+    const newExperience = {
+      country,
+      createdBy: user?.token,
+      jobTitle,
+      companyName,
+      currentJob,
+      start: startDate,
+      end: currentJob ? null : endDate,
+      description,
+    };
+
+    alert('added Experience Successfully!');
+    console.log(newExperience);
+  };
+
   return (
     <div className="bg-white max-w-[768px] max-h-[640px] flex flex-col fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-lg z-20">
       {/* TITLE */}
@@ -49,8 +127,8 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
             type="text"
             id="country"
             name="country"
-            //   value={country}
-            onChange={(e) => {}}
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
             placeholder="Enter a Country"
             required
             className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
@@ -66,8 +144,8 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
             type="text"
             id="jobTitle"
             name="jobTitle"
-            //   value={jobTitle}
-            onChange={(e) => {}}
+            value={jobTitle}
+            onChange={(e) => setJobTitle(e.target.value)}
             placeholder="Enter a position or title"
             required
             className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
@@ -76,15 +154,15 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
 
         {/* COMPANY NAME */}
         <div className="w-full flex flex-col gap-2">
-          <label htmlFor="company" className="text-lg text-darkGrey">
+          <label htmlFor="companyName" className="text-lg text-darkGrey">
             Company
           </label>
           <input
             type="text"
-            id="company"
-            name="company"
-            //   value={company}
-            onChange={(e) => {}}
+            id="companyName"
+            name="companyName"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
             placeholder="ex. Microsoft"
             required
             className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
@@ -94,13 +172,18 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
         {/* CURRENT JOB */}
         <div className="w-full flex items-center gap-4">
           <div
-            className="w-8 h-8 border-sm bg-lighterGrey relative flex "
+            className="w-8 h-8 border-sm bg-lighterGrey relative flex cursor-pointer rounded-md overflow-hidden"
             style={{ boxShadow: 'inset 2px 2px 4px 0 rgb(0 0 0 / 0.05)' }}
           >
-            <BsCheckLg className="text-xl text-white w-full h-full bg-primaryRed" />
+            <BsCheckLg
+              className={`text-xl text-white w-full h-full bg-primaryRed ${
+                currentJob ? 'visible' : 'invisible'
+              }`}
+            />
             <input
               type="checkbox"
               className="absolute top-0 left-0 right-0 bottom-0 opacity-0"
+              onChange={(e) => setCurrentJob(e.target.checked)}
             />
           </div>
           <label htmlFor="email" className="text-lg text-darkGrey">
@@ -114,18 +197,28 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
           <div className="w-full flex items-center gap-4">
             <input
               type="text"
-              name="monthStart"
-              //   value={monthStart}
-              onChange={(e) => {}}
+              name="startMonth"
+              value={startDate.startMonth}
+              onChange={(e) =>
+                setStartDate({
+                  startMonth: e.target.value,
+                  startYear: startDate.startYear,
+                })
+              }
               placeholder="Enter a month"
               required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
             />
             <input
               type="text"
-              name="yearStart"
-              //   value={yearStart}
-              onChange={(e) => {}}
+              name="startYear"
+              value={startDate.startYear}
+              onChange={(e) =>
+                setStartDate({
+                  startMonth: startDate.startMonth,
+                  startYear: e.target.value,
+                })
+              }
               placeholder="Enter a year"
               required
               className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
@@ -139,29 +232,62 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
           <div className="w-full flex items-center gap-4">
             <input
               type="text"
-              name="monthEnd"
-              //   value={monthEnd}
-              onChange={(e) => {}}
+              name="endMonth"
+              value={endDate.endMonth}
+              onChange={(e) =>
+                setEndDate({
+                  endMonth: e.target.value,
+                  endYear: endDate.endYear,
+                })
+              }
               placeholder="Enter a month"
               required
-              className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
+              className={`w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none ${
+                currentJob ? 'pointer-events-none bg-lighterGrey' : ''
+              }`}
             />
             <input
               type="text"
-              name="yearEnd"
-              //   value={yearEnd}
-              onChange={(e) => {}}
+              name="endYear"
+              value={endDate.endYear}
+              onChange={(e) =>
+                setEndDate({
+                  endMonth: endDate.endMonth,
+                  endYear: e.target.value,
+                })
+              }
               placeholder="Enter a year"
               required
-              className="w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none"
+              className={`w-full px-3 py-2 border-[1px] border-lightGrey rounded-md outline-none ${
+                currentJob ? 'pointer-events-none bg-lighterGrey' : ''
+              }`}
             />
           </div>
+        </div>
+
+        {/* DESCRIPTION */}
+        <div className="w-full flex flex-col gap-2">
+          <h3 className="text-lg text-darkGrey">Description</h3>
+          <textarea
+            className="w-full rounded-md px-3 py-2 border-[1px] border-lightGrey"
+            cols={20}
+            rows={10}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
       </form>
 
       {/* BUTTON */}
       <div className="w-full h-[15%] py-2 flex border-t-[1px] border-t-lightGrey">
-        <button className="w-[60%] bg-primaryRed py-2 text-white text-xl font-bold m-auto cursor-pointer rounded-md">
+        <button
+          type="button"
+          className={`w-[60%]  py-2 text-white text-xl font-bold m-auto cursor-pointer rounded-md ${
+            isReadyToSubmit
+              ? 'bg-primaryRed cursor-pointer'
+              : 'bg-lighterGrey cursor-not-allowed'
+          }`}
+          onClick={submitHandler}
+        >
           Save
         </button>
       </div>
@@ -169,14 +295,11 @@ const FormComponent: React.FC<Props> = ({ onClose }) => {
   );
 };
 
-const FormExperience: React.FC<Props> = ({ children, onClose, portal }) => {
+const FormExperience: React.FC<Props> = ({ onClose, portal }) => {
   return (
     <>
       {createPortal(<BgPortal onClose={onClose} />, portal)}
-      {createPortal(
-        <FormComponent children={children} onClose={onClose} />,
-        portal
-      )}
+      {createPortal(<FormComponent onClose={onClose} />, portal)}
     </>
   );
 };

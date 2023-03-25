@@ -17,7 +17,7 @@ const Register: React.FC = () => {
       <div className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-br from-black/50 to-black/10" />
 
       {/* INPUT FORM */}
-      <div className="xl:w-[65%] bg-white fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 p-12 flex flex-col lg:w-[85%]">
+      <div className="max-w-[800px] max-h-[640px] bg-white fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 p-12 flex flex-col lg:w-[85%]">
         {/* ORIGINAL AUTH */}
         <div className="w-full h-[85%] flex flex-col gap-10">
           {/* TITLE */}

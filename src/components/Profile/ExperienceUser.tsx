@@ -16,25 +16,24 @@ const topbarLinks: string[] = [
 ];
 
 const ExperienceUser: React.FC<Props> = ({ onOpen }) => {
-  //   const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   // global state
-  //   const { experiences, isFetching, error } = useAppSelector(
-  //     (state) => state.experience
-  //   );
+  const { experiences, error } = useAppSelector((state) => state.experience);
 
   // fetching data of all experience
-  // useEffect(() => {
-  //   allExperience(dispatch);
-  // }, []);
+  useEffect(() => {
+    allExperience(dispatch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // useEffect(() => {
-  //   console.log(error);
-  // }, [error]);
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
 
-  // useEffect(() => {
-  //   console.log(experiences);
-  // }, [experiences]);
+  useEffect(() => {
+    console.log(experiences);
+  }, [experiences]);
 
   return (
     <div className="w-[60%] bg-white p-7 flex flex-col rounded-lg">
@@ -62,8 +61,8 @@ const ExperienceUser: React.FC<Props> = ({ onOpen }) => {
       <div className="w-full flex flex-col mt-6 relative">
         <h3 className="text-2xl font-bold text-darkGrey">Experience (20)</h3>
         <ul className="w-full flex flex-col">
-          {/* {experiences.length !== 0 &&
-            experiences.map((item: Experience) => (
+          {experiences.length !== 0 &&
+            experiences.slice(0, 4).map((item: Experience) => (
               <li
                 key={item._id}
                 className="py-6 flex gap-6 border-b-[1px] border-b-darkGrey"
@@ -74,38 +73,35 @@ const ExperienceUser: React.FC<Props> = ({ onOpen }) => {
                 <div className="w-[90%] flex flex-col gap-5">
                   <div className="w-full">
                     <h4 className="text-2xl font-semibold text-darkGrey">
-                      {item.createdBy.jobTitle}
+                      {item.jobTitle}
                     </h4>
                     <p className="text-xl text-lightGrey">
                       {item.companyName} - Fulltime
                     </p>
                     <p className="text-xl text-lightGrey">
-                      {item.createdBy.start} -{' '}
-                      {item.createdBy.currentJob
-                        ? 'Present'
-                        : item.createdBy.end}
+                      {item.start} - {item.currentJob ? 'Present' : item.end}
                     </p>
                     <p className="text-xl text-lightGrey">
                       Ruka Artha Gading, North Jakarta
                     </p>
                   </div>
                   <p className="text-xl text-darkGrey">
-                    {item.createdBy.description}
+                    {item.description}
                     <span className="font-bold text-lightGrey cursor-pointer">
                       ...see more
                     </span>
                   </p>
                 </div>
               </li>
-            ))} */}
+            ))}
 
-          {/* {experiences.length === 0 && (
+          {experiences.length === 0 && (
             <span className="text-lg text-darkGrey font-bold">
               There are no Experience
             </span>
-          )} */}
+          )}
 
-          <li className="py-6 flex gap-6 border-b-[1px] border-b-darkGrey">
+          {/* <li className="py-6 flex gap-6 border-b-[1px] border-b-darkGrey">
             <div className="w-[10%]">
               <img src="./TI.png" alt="TI" className="object-cover" />
             </div>
@@ -131,7 +127,7 @@ const ExperienceUser: React.FC<Props> = ({ onOpen }) => {
                 </span>
               </p>
             </div>
-          </li>
+          </li> */}
         </ul>
 
         <span

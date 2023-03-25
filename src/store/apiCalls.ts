@@ -14,16 +14,6 @@ interface RegisterBody extends LoginBody {
   userType: string;
 }
 
-interface ExperienceBody {
-  companyName: string;
-  country: string;
-  createdBy: string;
-  start: string;
-  end: null | string;
-  currentJob: boolean;
-  description: string;
-}
-
 // login thunk
 export const login = async (dispatch: any, body: LoginBody) => {
   dispatch(loginSliceActions.loginStart());
@@ -75,27 +65,6 @@ export const allExperience = async (dispatch: any) => {
   try {
     const res = await fetch(`${process.env.REACT_APP_ALLEXPERIENCE_API}`, {
       method: 'GET',
-    });
-
-    if (!res.ok) {
-      throw new Error();
-    }
-    const data = await res.json();
-    dispatch(experienceSliceActions.getAllExperienceSuccess(data));
-  } catch (err) {
-    dispatch(experienceSliceActions.experienceFailure());
-  }
-};
-
-// get all experience
-export const addExperience = async (dispatch: any, body: ExperienceBody) => {
-  dispatch(experienceSliceActions.experienceStart());
-
-  try {
-    const res = await fetch(`${process.env.REACT_APP_ALLEXPERIENCE_API}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
