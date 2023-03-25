@@ -14,7 +14,7 @@ const Login: React.FC = () => {
       </div>
 
       {/* BG GRADIENT */}
-      <div className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-br from-black/50 to-black/10" />
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-gradient-to-br from-black/50 to-black/10" />
 
       {/* INPUT FORM */}
       <div className="xl:w-[65%] bg-white fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 p-12 flex flex-col items-center lg:w-[85%]">
