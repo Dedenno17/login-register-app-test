@@ -44,3 +44,11 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Set Up
+
+-fisrt of all type npm install to install all packages.
+-and then install tailwind & prefixer. you can install both of those with following the documentation [here](https://tailwindcss.com/docs/guides/create-react-app).
+
+Kalau harus jujur sebenarnya applikasi ini belum rampung, Saya sudah mencoba semua nya semampu saya.
+Hasil akhirnya saya serahkan kepada Bapak/Ibu.
